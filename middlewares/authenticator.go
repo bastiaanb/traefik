@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strings"
 
 	goauth "github.com/abbot/go-http-auth"
@@ -38,6 +39,7 @@ func NewAuthenticator(authConfig *types.Auth) (*Authenticator, error) {
 				basicAuth.RequireAuth(w, r)
 			} else {
 				log.Debug("Basic auth success...")
+				r.URL.User = url.User(username)
 				if authConfig.HeaderField != "" {
 					r.Header[authConfig.HeaderField] = []string{username}
 				}
@@ -56,6 +58,7 @@ func NewAuthenticator(authConfig *types.Auth) (*Authenticator, error) {
 				digestAuth.RequireAuth(w, r)
 			} else {
 				log.Debug("Digest auth success...")
+				r.URL.User = url.User(username)
 				if authConfig.HeaderField != "" {
 					r.Header[authConfig.HeaderField] = []string{username}
 				}
